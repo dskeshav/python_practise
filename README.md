@@ -1,2 +1,2 @@
-# python_pratice
+# python_practise
 Learning python programming 
