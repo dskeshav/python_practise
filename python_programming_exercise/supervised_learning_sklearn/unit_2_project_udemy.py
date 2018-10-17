@@ -1,8 +1,8 @@
 #Supervised Learning Project
 import pandas
 import numpy
-from pandas.plotting import scatter_matrix
 import matplotlib.pyplot as plotting
+from pandas.plotting import scatter_matrix
 from sklearn import model_selection
 from sklearn.metrics import classification_report ,confusion_matrix , accuracy_score
 from sklearn.linear_model import LogisticRegression

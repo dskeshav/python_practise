@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas
+import numpy as np
 from sklearn.model_selection import train_test_split
 
 
@@ -29,7 +30,7 @@ plt.show()
 columns= games.columns.tolist()
 
 #filter the columns to remove data we do not want
-columns=[c for c in columns if c not in ['bayes_average','average_rating','type','name','id']]
+columns=[c for c in columns if c not in ['bayes_average_rating','average_rating','type','name','id']]
 print("Columns: ",columns)
 #Store the variable we'll be predicting on
 target="average_rating"
@@ -97,3 +98,9 @@ print("RFR rating: ",rating_RFR)
 
 # get the target values
 print(test[target].iloc[0])
+N=50
+colors = np.random.rand(N)
+area = (30 * np.random.rand(N))**2
+
+plt.scatter(games[columns],games["average_rating"],s=area,c=colors)
+plt.show()
