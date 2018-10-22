@@ -1,8 +1,9 @@
 import csv 
 import requests
-
+from pandas.plotting import scatter_matrix
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 #write to adult.data file if empty
 
@@ -15,14 +16,26 @@ print(type(dataset_data))
 print(dataset_data.shape)
 # print(dataset_data["age"])
 
-dataset_data=dataset_data.dropna(subset=[])
-print(dataset_data.shape)
+target=["capital-gain","capital-loss"]
 
-# dataset_data=dataset_data.dropna(dataset_data["age"]==" ?")
+
+# dataset_data=dataset_data.dropna(dataset_data["capital-gain"]==0)
 # print(dataset_data.shape)
+# pd.plotting.scatter_matrix(dataset_data,c=names,figsize=[8,8],s=150,marker='D')
 
-# plt.hist(dataset_data["age"])
+dataset_data.hist()
+plt.show()
+# plt.hist(dataset_data['capital-gain','capital-loss'])
 # plt.show()
+
+# scatter_matrix(dataset_data)
+# plt.show()
+
+#Corelation matrix
+corrmat=dataset_data.corr()
+fig=plt.figure(figsize=(12,9))
+sns.heatmap(corrmat,vmax=.8,square=True)
+plt.show()
 # response=requests.get(data_url)
 # with open("adult.data.csv",'w') as datacsv:
 #     if response.status_code != 200:
@@ -37,3 +50,12 @@ test_url="https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.
 dataset_test=pd.read_csv(test_url,names=names)
 print(dataset_test.shape)
 
+
+plt.hist(dataset_test['capital-gain'])
+plt.show()
+
+#Corelation matrix
+corrmat=dataset_test.corr()
+fig=plt.figure(figsize=(12,9))
+sns.heatmap(corrmat,vmax=.8,square=True)
+plt.show()

@@ -36,7 +36,7 @@ print("Columns: ",columns)
 target="average_rating"
 
 
-#Coreleation matrix
+#Corelation matrix
 corrmat=games.corr()
 fig=plt.figure(figsize=(12,9))
 sns.heatmap(corrmat,vmax=.8,square=True)
