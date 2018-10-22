@@ -30,6 +30,7 @@ plt.show()
 columns= games.columns.tolist()
 
 #filter the columns to remove data we do not want
+
 columns=[c for c in columns if c not in ['bayes_average_rating','average_rating','type','name','id']]
 print("Columns: ",columns)
 #Store the variable we'll be predicting on
