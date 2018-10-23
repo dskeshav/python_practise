@@ -69,6 +69,7 @@ for name,model in models:
 
 for name, model in models:
     model.fit(X_train, y_train)
+    print("X_Validation",X_validation)
     predictions = model.predict(X_validation)
     print(name)
     print(accuracy_score(y_validation, predictions))
