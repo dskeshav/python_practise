@@ -51,7 +51,7 @@ columns= dataset_data.columns.tolist()
 
 #filter the columns to remove data we do not want
 columns=[c for c in columns if c not in ['class','native-country','sex','race','relationship','education','occupation','marital-status','workclass']]
-print("columns :",columns)
+# print("columns :",columns)
 
 
 #classifier algorithm
@@ -62,7 +62,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import classification_report ,confusion_matrix , accuracy_score
 
 #time interval
-import time
+import datetime
 
 #10 -fold Cross Validation dataset
 seed=7
@@ -75,8 +75,7 @@ models.append(('NB',GaussianNB()))
 models.append(('BNB',BernoulliNB()))
 models.append(('KNN1',KNeighborsClassifier(n_neighbors=1)))
 models.append(('KNN3',KNeighborsClassifier(n_neighbors=3)))
-models.append(('SVM',SVC()))
-
+# models.append(('SVM',SVC()))
 
 results=[]
 names=[]
@@ -91,20 +90,19 @@ for name,model in models:
 
 
 for name, model in models:
-#     t1=time()
+    t1=datetime.datetime.now()
     model.fit(dataset_data[columns], dataset_data['class'])
-#     t2=time()-t1
+    t2=datetime.datetime.now()
     predictions = model.predict(dataset_test[columns])
 #     if(name=='SVC'):
 #             with open('adult.test.csv','r') as filepred:
 #                 for wrap in predictions:
 #                         filepred.writeline(wrap)
     print("type of predictions: ",type(predictions))
-    print("predict: ",predictions.size," ",predictions)
     print(name)
     print(accuracy_score(dataset_test['class'], predictions))
     print(classification_report(dataset_test['class'], predictions))
-#     print("trining time of {}: ".format(model),round(t2,3))
+    print("trining time of {}: ".format(model),round((t2-t1).total_seconds(),3))
 #histogram representation of dataset
 # dataset_data.hist()
 # plt.show()
