@@ -74,11 +74,13 @@ models.append(('CART',DecisionTreeClassifier()))
 models.append(('NB',GaussianNB()))
 models.append(('BNB',BernoulliNB()))
 models.append(('KNN1',KNeighborsClassifier(n_neighbors=1)))
-models.append(('KNN3',KNeighborsClassifier(n_neighbors=3)))
+models.append(('KNN5',KNeighborsClassifier(n_neighbors=5)))
+models.append(('KNN7',KNeighborsClassifier(n_neighbors=7)))
 # models.append(('SVM',SVC()))
 
 results=[]
 names=[]
+training_time=[]
 
 for name,model in models:
     kfold=model_selection.KFold(n_splits=10,random_state=seed)
@@ -102,7 +104,19 @@ for name, model in models:
     print(name)
     print(accuracy_score(dataset_test['class'], predictions))
     print(classification_report(dataset_test['class'], predictions))
+    training_time.append(round((t2-t1).total_seconds(),3))
     print("trining time of {}: ".format(model),round((t2-t1).total_seconds(),3))
+
+
+print('training time ',training_time)
+# boxplot algorithm comparison
+fig = plt.figure()
+fig.suptitle('Algorithm Comparison')
+ax = fig.add_subplot(111)
+# plt.boxplot(results)
+plt.boxplot(training_time)
+ax.set_xticklabels(names)
+plt.show()
 #histogram representation of dataset
 # dataset_data.hist()
 # plt.show()
