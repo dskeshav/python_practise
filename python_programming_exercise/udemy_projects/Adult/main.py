@@ -59,6 +59,7 @@ from sklearn.tree import DecisionTreeClassifier  #
 from sklearn.naive_bayes import BernoulliNB,GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report ,confusion_matrix , accuracy_score
 
 #time interval
@@ -70,12 +71,13 @@ scoring='accuracy'
 
 #models
 models=[]
-models.append(('CART',DecisionTreeClassifier()))
+models.append(('CART',DecisionTreeClassifier(criterion='CHAID')))
 models.append(('NB',GaussianNB()))
 models.append(('BNB',BernoulliNB()))
 models.append(('KNN1',KNeighborsClassifier(n_neighbors=1)))
 models.append(('KNN5',KNeighborsClassifier(n_neighbors=5)))
 models.append(('KNN7',KNeighborsClassifier(n_neighbors=7)))
+# models.append(('RFC',RandomForestClassifier(n_estimators=1000)))
 # models.append(('SVM',SVC()))
 
 results=[]
@@ -90,30 +92,36 @@ for name,model in models:
     msg="%s: %f (%f)"%(name,cv_results.mean(),cv_results.std())
     print(msg)
 
-
+print("results ",results,"\n",type(results))
 for name, model in models:
     t1=datetime.datetime.now()
     model.fit(dataset_data[columns], dataset_data['class'])
     t2=datetime.datetime.now()
     predictions = model.predict(dataset_test[columns])
-#     if(name=='SVC'):
-#             with open('adult.test.csv','r') as filepred:
-#                 for wrap in predictions:
-#                         filepred.writeline(wrap)
+
     print("type of predictions: ",type(predictions))
     print(name)
     print(accuracy_score(dataset_test['class'], predictions))
     print(classification_report(dataset_test['class'], predictions))
-    training_time.append(round((t2-t1).total_seconds(),3))
+    training_time.append(np.array([round((t2-t1).total_seconds(),3)]))
     print("trining time of {}: ".format(model),round((t2-t1).total_seconds(),3))
 
 
 print('training time ',training_time)
-# boxplot algorithm comparison
-fig = plt.figure()
-fig.suptitle('Algorithm Comparison')
-ax = fig.add_subplot(111)
+# # boxplot algorithm comparison
+# fig = plt.figure()
+# fig.suptitle('Algorithm Comparison')
+# ax = fig.add_subplot(111)
 # plt.boxplot(results)
+# ax.set_xticklabels(names)
+# plt.show()
+
+
+
+# boxplot trianing time
+fig = plt.figure()
+fig.suptitle('Training time Comparison')
+ax = fig.add_subplot(111)
 plt.boxplot(training_time)
 ax.set_xticklabels(names)
 plt.show()
@@ -138,11 +146,11 @@ plt.show()
 
 
 
-# # #Corelation matrix
-# # corrmat=dataset_test.corr()
-# # fig=plt.figure(figsize=(12,9))
-# # sns.heatmap(corrmat,vmax=.8,square=True)
-# # plt.show()
+#Corelation matrix
+# corrmat=dataset_test.corr()
+# fig=plt.figure(figsize=(12,9))
+# sns.heatmap(corrmat,vmax=.8,square=True)
+# plt.show()
 
 
 
