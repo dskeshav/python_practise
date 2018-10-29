@@ -55,7 +55,8 @@ columns=[c for c in columns if c not in ['class','native-country','sex','race','
 
 
 #classifier algorithm
-from sklearn.tree import DecisionTreeClassifier  #
+# from sklearn import tree 
+from sklearn.tree import DecisionTreeClassifier  
 from sklearn.naive_bayes import BernoulliNB,GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
@@ -71,14 +72,15 @@ scoring='accuracy'
 
 #models
 models=[]
-models.append(('CART',DecisionTreeClassifier(criterion='CHAID')))
+models.append(('CART_gini',DecisionTreeClassifier(criterion='gini',min_samples_split=250,min_samples_leaf=20)))
+models.append(('CART_entropy',DecisionTreeClassifier(criterion='entropy',min_samples_split=70,min_samples_leaf=10)))
 models.append(('NB',GaussianNB()))
 models.append(('BNB',BernoulliNB()))
-models.append(('KNN1',KNeighborsClassifier(n_neighbors=1)))
-models.append(('KNN5',KNeighborsClassifier(n_neighbors=5)))
-models.append(('KNN7',KNeighborsClassifier(n_neighbors=7)))
-# models.append(('RFC',RandomForestClassifier(n_estimators=1000)))
-# models.append(('SVM',SVC()))
+# models.append(('KNN1',KNeighborsClassifier(n_neighbors=1)))
+# models.append(('KNN5',KNeighborsClassifier(n_neighbors=5)))
+# models.append(('KNN7',KNeighborsClassifier(n_neighbors=7)))
+# # models.append(('RFC',RandomForestClassifier(n_estimators=1000)))
+# # models.append(('SVM',SVC()))
 
 results=[]
 names=[]
@@ -108,58 +110,70 @@ for name, model in models:
 
 
 print('training time ',training_time)
-# # boxplot algorithm comparison
+# boxplot algorithm comparison
+fig = plt.figure()
+fig.suptitle('Algorithm Comparison')
+ax = fig.add_subplot(111)
+plt.boxplot(results)
+ax.set_xticklabels(names)
+plt.show()
+
+
+
+# # boxplot trianing time
 # fig = plt.figure()
-# fig.suptitle('Algorithm Comparison')
+# fig.suptitle('Training time Comparison')
 # ax = fig.add_subplot(111)
+# plt.boxplot(training_time)
 # plt.boxplot(results)
 # ax.set_xticklabels(names)
 # plt.show()
+# #histogram representation of dataset
+# # dataset_data.hist()
+# # plt.show()
+
+# # #Corelation matrix
+# # corrmat=dataset_data.corr()
+# # fig=plt.figure(figsize=(12,9))
+# # sns.heatmap(corrmat,vmax=1,square=True)
+# # plt.show()
+
+# # # response=requests.get(data_url)
+# # # with open("adult.data.csv",'w') as datacsv:
+# # #     if response.status_code != 200:
+# # #         print('Failed to get data:', response.status_code)
+# # #     else:
+# # #         wrapper = csv.reader(response.text.strip().split('\n'))
+# # #     for record in wrapper:
+# # #         csv
 
 
-
-# boxplot trianing time
-fig = plt.figure()
-fig.suptitle('Training time Comparison')
-ax = fig.add_subplot(111)
-plt.boxplot(training_time)
-ax.set_xticklabels(names)
-plt.show()
-#histogram representation of dataset
-# dataset_data.hist()
-# plt.show()
 
 # #Corelation matrix
-# corrmat=dataset_data.corr()
-# fig=plt.figure(figsize=(12,9))
-# sns.heatmap(corrmat,vmax=1,square=True)
-# plt.show()
-
-# # response=requests.get(data_url)
-# # with open("adult.data.csv",'w') as datacsv:
-# #     if response.status_code != 200:
-# #         print('Failed to get data:', response.status_code)
-# #     else:
-# #         wrapper = csv.reader(response.text.strip().split('\n'))
-# #     for record in wrapper:
-# #         csv
+# # corrmat=dataset_test.corr()
+# # fig=plt.figure(figsize=(12,9))
+# # sns.heatmap(corrmat,vmax=.8,square=True)
+# # plt.show()
 
 
 
-#Corelation matrix
-# corrmat=dataset_test.corr()
-# fig=plt.figure(figsize=(12,9))
-# sns.heatmap(corrmat,vmax=.8,square=True)
-# plt.show()
+# # data_url="https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
+# # names=['age','workclass','fnlwgt','education','education-num','marital-status','occupation','relationship','race','sex',
+# #         'capital-gain','capital-loss','hours-per-week','native-country','class']
+# # #write to adult.data file if empty
+# # if (os.path.getsize("adult.data.csv")==0):
+# #        with open("adult.data.csv",'w') as traindatafile:
+# #                traindatafile.write(','.join(names))
+# # else:
+# #         print("empty file")
+# income_classify=tree.DecisionTreeClassifier(criterion='gini',min_samples_split=30)
+# income_classify.fit(dataset_data[columns], dataset_data['class'])
+# print(income_classify)
 
 
+# with open("income_classify.txt", "w") as f:
+#     f = tree.export_graphviz(income_classify, out_file=f)
 
-# data_url="https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
-# names=['age','workclass','fnlwgt','education','education-num','marital-status','occupation','relationship','race','sex',
-#         'capital-gain','capital-loss','hours-per-week','native-country','class']
-# #write to adult.data file if empty
-# if (os.path.getsize("adult.data.csv")==0):
-#        with open("adult.data.csv",'w') as traindatafile:
-#                traindatafile.write(','.join(names))
-# else:
-#         print("empty file")
+# # converting into the pdf file
+# with open("income_classify.pdf", "w") as f:
+#     f = tree.export_graphviz(income_classify, out_file=f)
