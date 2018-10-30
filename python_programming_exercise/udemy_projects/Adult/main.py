@@ -16,7 +16,6 @@ names=['age','workclass','fnlwgt','education','education-num','marital-status','
 dataset_data = pd.read_csv(data_url, names=names)
 print(type(dataset_data))
 print("dataset_data shape: ",dataset_data.shape)
-print(dataset_data.describe())
 
 #Raplace missing values ? with NaN
 dataset_data[names]=dataset_data[names].replace(' ?',np.nan)
@@ -24,6 +23,7 @@ dataset_data[names]=dataset_data[names].replace(' ?',np.nan)
 #Drop rows which contains NaN
 dataset_data=dataset_data.dropna()
 print("dataset_data shape after row removal:\n",dataset_data.shape)
+print("dataset_data description:\n",dataset_data.describe())
 print("dataset_data class:\n",dataset_data.groupby('class').size())
 
 # Get test dataset
@@ -55,8 +55,8 @@ columns=[c for c in columns if c not in ['class','native-country','sex','race','
 
 
 #classifier algorithm
-# from sklearn import tree 
-from sklearn.tree import DecisionTreeClassifier  
+from sklearn import tree 
+# from sklearntree import DecisionTreeClassifier  
 from sklearn.naive_bayes import BernoulliNB,GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
@@ -66,26 +66,21 @@ from sklearn.metrics import classification_report ,confusion_matrix , accuracy_s
 #time interval
 import datetime
 
-#10 -fold Cross Validation dataset
-seed=7
-scoring='accuracy'
-
 #models
 models=[]
-models.append(('CART_gini',DecisionTreeClassifier(criterion='gini',min_samples_split=250,min_samples_leaf=20)))
-models.append(('CART_entropy',DecisionTreeClassifier(criterion='entropy',min_samples_split=70,min_samples_leaf=10)))
+models.append(('CART_gini',tree.DecisionTreeClassifier(criterion='gini',min_samples_split=250,min_samples_leaf=20)))
 models.append(('NB',GaussianNB()))
 models.append(('BNB',BernoulliNB()))
-# models.append(('KNN1',KNeighborsClassifier(n_neighbors=1)))
-# models.append(('KNN5',KNeighborsClassifier(n_neighbors=5)))
-# models.append(('KNN7',KNeighborsClassifier(n_neighbors=7)))
-# # models.append(('RFC',RandomForestClassifier(n_estimators=1000)))
-# # models.append(('SVM',SVC()))
+models.append(('KNN1',KNeighborsClassifier(n_neighbors=1)))
+models.append(('KNN3',KNeighborsClassifier(n_neighbors=3)))
 
 results=[]
 names=[]
 training_time=[]
 
+#10 -fold Cross Validation dataset
+seed=7
+scoring='accuracy'
 for name,model in models:
     kfold=model_selection.KFold(n_splits=10,random_state=seed)
     cv_results=model_selection.cross_val_score(model, dataset_data[columns], dataset_data['class'], cv=kfold, scoring=scoring)
@@ -94,7 +89,7 @@ for name,model in models:
     msg="%s: %f (%f)"%(name,cv_results.mean(),cv_results.std())
     print(msg)
 
-print("results ",results,"\n",type(results))
+# print("results ",results,"\n",type(results))
 for name, model in models:
     t1=datetime.datetime.now()
     model.fit(dataset_data[columns], dataset_data['class'])
@@ -109,7 +104,7 @@ for name, model in models:
     print("trining time of {}: ".format(model),round((t2-t1).total_seconds(),3))
 
 
-print('training time ',training_time)
+
 # boxplot algorithm comparison
 fig = plt.figure()
 fig.suptitle('Algorithm Comparison')
@@ -166,14 +161,16 @@ plt.show()
 # #                traindatafile.write(','.join(names))
 # # else:
 # #         print("empty file")
-# income_classify=tree.DecisionTreeClassifier(criterion='gini',min_samples_split=30)
-# income_classify.fit(dataset_data[columns], dataset_data['class'])
+income_classify=tree.DecisionTreeClassifier(criterion='gini',min_samples_split=250,min_samples_leaf=20)
+income_classify.fit(dataset_data[columns], dataset_data['class'])
 # print(income_classify)
+import graphviz
 
+with open("income_classify.txt", "w") as f:
+    f = tree.export_graphviz(income_classify, out_file=f,feature_names=dataset_data.features_name,  
+                         class_names=dataset_data.target,  
+                         filled=True, rounded=True)
 
-# with open("income_classify.txt", "w") as f:
-#     f = tree.export_graphviz(income_classify, out_file=f)
-
-# # converting into the pdf file
-# with open("income_classify.pdf", "w") as f:
-#     f = tree.export_graphviz(income_classify, out_file=f)
+# converting into the pdf file
+with open("income_classify.pdf", "w") as f:
+    f = tree.export_graphviz(income_classify, out_file=f)

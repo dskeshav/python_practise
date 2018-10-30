@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
 iris=datasets.load_iris()
+print("iris features_name:\n",iris.feature_names)
+print("iris class_names:\n",iris.target_names)
 
 X=iris.data
 y=iris.target
@@ -23,8 +25,8 @@ knn.fit(X,y)
 print(iris['data'].shape)
 print(iris['target'].shape)
 
-prediction=knn.predict(X_new)
-print('Prediction {}'.format(prediction))
+# prediction=knn.predict(X_new)
+# print('Prediction {}'.format(prediction))
 
 
 
