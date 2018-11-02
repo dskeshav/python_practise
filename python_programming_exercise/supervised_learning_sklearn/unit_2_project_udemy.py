@@ -1,13 +1,17 @@
 #Supervised Learning Project
 import pandas
 import numpy
+#plotting module
 import matplotlib.pyplot as plotting
 from pandas.plotting import scatter_matrix
+#model building
 from sklearn import model_selection
-from sklearn.metrics import classification_report ,confusion_matrix , accuracy_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
+#Reporte module
+from sklearn.metrics import classification_report ,confusion_matrix , accuracy_score
+
 
 #Load the Dataset
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"

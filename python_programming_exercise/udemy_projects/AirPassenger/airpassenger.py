@@ -39,5 +39,5 @@ print("print")
 
 from statsmodels.tsa.stattools import adfuller
 def test_stationarity(timeseries):
-    #Determing rolling statistics
+#Determing rolling statistics
     rolmean=pd.rolling_mean(timeseries,window=12)
