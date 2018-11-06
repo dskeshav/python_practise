@@ -61,23 +61,40 @@ from sklearn.naive_bayes import BernoulliNB,GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import VotingClassifier
 from sklearn.metrics import classification_report ,confusion_matrix , accuracy_score
 
 #time interval
 import datetime
 
+dtc=tree.DecisionTreeClassifier(criterion='gini',min_samples_split=250,min_samples_leaf=20)
+gnb=GaussianNB()
+bnb=BernoulliNB()
+knn1=KNeighborsClassifier(n_neighbors=1)
+knn3=KNeighborsClassifier(n_neighbors=3)
+
+
 #models
 models=[]
-models.append(('CART_gini',tree.DecisionTreeClassifier(criterion='gini',min_samples_split=250,min_samples_leaf=20)))
-models.append(('NB',GaussianNB()))
-models.append(('BNB',BernoulliNB()))
-models.append(('KNN1',KNeighborsClassifier(n_neighbors=1)))
-models.append(('KNN3',KNeighborsClassifier(n_neighbors=3)))
+models.append(('CART_gini',dtc))
+models.append(('NB',gnb))
+models.append(('BNB',bnb))
+models.append(('KNN1',knn1))
+models.append(('KNN3',knn3))
+
+#Voting Classifier
+vc=VotingClassifier(estimators=models,voting='soft')
+vc.fit(dataset_data[columns], dataset_data['class'])
+predictions = vc.predict(dataset_test[columns])
+print("type of predictions: ",type(predictions))
+print("VC")
+print(accuracy_score(dataset_test['class'], predictions))
+print(classification_report(dataset_test['class'], predictions))
+
 
 results=[]
 names=[]
 training_time=[]
-
 #10 -fold Cross Validation dataset
 seed=7
 scoring='accuracy'
@@ -161,16 +178,16 @@ plt.show()
 # #                traindatafile.write(','.join(names))
 # # else:
 # #         print("empty file")
-income_classify=tree.DecisionTreeClassifier(criterion='gini',min_samples_split=250,min_samples_leaf=20)
-income_classify.fit(dataset_data[columns], dataset_data['class'])
+# income_classify=tree.DecisionTreeClassifier(criterion='gini',min_samples_split=250,min_samples_leaf=20)
+# income_classify.fit(dataset_data[columns], dataset_data['class'])
 # print(income_classify)
-import graphviz
+# import graphviz
 
-with open("income_classify.txt", "w") as f:
-    f = tree.export_graphviz(income_classify, out_file=f,feature_names=dataset_data.features_name,  
-                         class_names=dataset_data.target,  
-                         filled=True, rounded=True)
+# with open("income_classify.txt", "w") as f:
+#     f = tree.export_graphviz(income_classify, out_file=f,feature_names=dataset_data.features_name,  
+#                          class_names=dataset_data.target,  
+#                          filled=True, rounded=True)
 
-# converting into the pdf file
-with open("income_classify.pdf", "w") as f:
-    f = tree.export_graphviz(income_classify, out_file=f)
+# # converting into the pdf file
+# with open("income_classify.pdf", "w") as f:
+#     f = tree.export_graphviz(income_classify, out_file=f)
