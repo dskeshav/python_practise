@@ -6,12 +6,13 @@ import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plotting
 
+import pickle
+
 dataset=pd.read_csv('data_banknote.csv')
 
 print(dataset.shape)
 
-# dataset.hist()
-# plotting.show()
+
 
 # scatter_matrix(dataset,color=colors)
 # plotting.show()
@@ -59,10 +60,17 @@ for name,model in models:
     msg="%s: %f (%f)"%(name,cv_results.mean(),cv_results.std())
     print(msg)
 
-for name, model in models:
-    model.fit(X_train, y_train)
-    print("X_Validation",X_validation)
-    predictions = model.predict(X_validation)
-    print(name)
-    print(accuracy_score(y_validation, predictions))
-    print(classification_report(y_validation, predictions))
+# for name, model in models:
+#     model.fit(X_train, y_train)
+#     print("X_Validation",X_validation)
+#     predictions = model.predict(X_validation)
+#     print(name)
+#     print(accuracy_score(y_validation, predictions))
+#     print(classification_report(y_validation, predictions))
+
+
+picModel=model.fit(X_train, y_train)
+
+
+filename='bank_note.pkl'
+pickle.dump(picModel,open(filename,'wb'))
