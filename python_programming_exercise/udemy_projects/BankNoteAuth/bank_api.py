@@ -1,7 +1,7 @@
 import numpy
 import sklearn
 import pickle
-from flask import Flask,request,josonify
+from flask import Flask,request,jsonify
 
 app=Flask(__name__)
 @app.route('/')
@@ -16,5 +16,8 @@ def note_predict():
     res=predict_output()
 
 
+
+
+predict_output
 if __name__=="__main__":
     app.run(debug=True,port=8791)

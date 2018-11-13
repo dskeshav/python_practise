@@ -34,7 +34,7 @@ print('indices ends: ',ts[:'1949-05-01'])
 
 print('1949:\n',ts['1949'])
 plt.hist(ts)
-plt.show(block=Fa)
+plt.show(block=False)
 plt.plot(ts)
 plt.show()
 print("print")
@@ -62,6 +62,8 @@ def test_stationarity(timeseries):
     #perform Dickey-Fuller test:
     print('Result of Dickey-Fuller Test:')
     dftest=adfuller(timeseries,autolag='AIC')
+    print("dftest datatype:",type(dftest))
+    print("dftest :",dftest)
     dfoutput=pd.Series(dftest[0:4],index=['Test Statistics','p-value','#Lags Used','Number of Observations Used'])
     for key,value in dftest[4].items():
         dfoutput['Critical Value (%s)'%key]=value
@@ -69,5 +71,48 @@ def test_stationarity(timeseries):
 
 #Test Stationarity for time series dataset
 test_stationarity(ts)
+
+#from observation it is evident that timeseries 
+#is not stationary(because Test Statistics> Critical Value)
+#TS is non-stationary due 2 major reason
+#1.Trend,2.Seasonality
+
+#Estimating and eliminating trend
+ts_log=np.log(ts)
+plt.plot(ts_log)
+plt.show()
+
+# So we can use some techniques to estimate or model this trend and 
+# then remove it from the series. Some of most commonly used are:
+# 1. Aggregation -average for monthly/average
+# 2. Smoothing- taking rolling avg
+# 3. Polynomial fitting -fit regression model
+
+#Moving Average(Smoothing)
+moving_avg=ts_log.rolling(window=12).mean()
+plt.plot(ts_log)
+plt.plot(moving_avg,color='red')
+plt.show()
+
+ts_log_moving_avg_diff=ts_log-moving_avg
+print(ts_log_moving_avg_diff.head(12))
+
+#drop 
+ts_log_moving_avg_diff.dropna(inplace=True)
+test_stationarity(ts_log_moving_avg_diff)
+
+#
+expwighted_avg = ts_log.ewm(halflife=12)
+logplot=plt.plot(ts_log)
+expwtavg=plt.plot(expwighted_avg, color='red')
+
+data = pd.DataFrame(index=ts.index, columns=[orgi,mean,std])
+data = data.cumsum()
+plt.figure()
+data.plot()
+plt.show()
+
+
+
 
 
