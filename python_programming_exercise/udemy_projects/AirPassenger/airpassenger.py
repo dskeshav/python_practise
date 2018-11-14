@@ -55,8 +55,8 @@ def test_stationarity(timeseries):
     
     df = pd.DataFrame(index=ts.index, columns=[orgi,mean,std])
     df = df.cumsum()
-    plt.figure()
-    df.plot()
+    # plt.figure()
+    # df.plot()
     plt.show()
 
     #perform Dickey-Fuller test:
@@ -102,15 +102,17 @@ ts_log_moving_avg_diff.dropna(inplace=True)
 test_stationarity(ts_log_moving_avg_diff)
 
 #
-expwighted_avg = ts_log.ewm(halflife=12)
-logplot=plt.plot(ts_log)
-expwtavg=plt.plot(expwighted_avg, color='red')
 
-data = pd.DataFrame(index=ts.index, columns=[orgi,mean,std])
-data = data.cumsum()
-plt.figure()
-data.plot()
-plt.show()
+expwighted_avg = pd.DataFrame(ts_log).ewm(halflife=12)
+print(expwighted_avg)
+# logplot=plt.plot(ts_log)
+plt.plot(expwighted_avg, color='red')
+
+# data = pd.DataFrame(index=ts.index, columns=[logplot,expwtavg])
+# data = data.cumsum()
+# plt.figure()
+# data.plot()
+# plt.show()
 
 
 
