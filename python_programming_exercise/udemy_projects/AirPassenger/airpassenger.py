@@ -7,13 +7,17 @@ rcParams['figure.figsize'] = 15, 6
 
 data = pd.read_csv('AirPassengers.csv')
 print( data.head())
+print("datashape: ",data.shape)
 print( '\n Data Types:')
-print( data.dtypes)
+print( data.dtypes) # here datatype is object not the TS object.
 
+#  In order to read the data as a time series 
+# a special argument has to be passed to the read_csv method.
 dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m')
 data = pd.read_csv('AirPassengers.csv', parse_dates=['Month'], index_col='Month',date_parser=dateparse)
-print( data.head())
+print(data.head())
 
+#print the index of the data
 print(data.index)
 print("datashape: ",data.shape)
 
@@ -26,20 +30,26 @@ print('ts index as a string constant: ',ts["1949-01-01"])
 
 #2. Import the datetime library and use 'datetime' function:
 from datetime import datetime
-print("ts index as a datetime constant: ",ts[datetime(1949,1,1)])
+# print("ts index as a datetime constant: ",ts[datetime(1949,1,1)])
 
-print('entire range:\n',ts['1949-01-01':'1949-05-01'])
+#Entire range index
+# print('Entire range:\n',ts[datetime(1949,1,1):datetime(1949,5,1)])
+#End Index
+# print('Indices ends: ',ts[:datetime(1949,5,1)])
 
-print('indices ends: ',ts[:'1949-05-01'])
+# print('1949:\n',ts['1949'])
 
-print('1949:\n',ts['1949'])
-plt.hist(ts)
-plt.show(block=False)
-plt.plot(ts)
-plt.show()
-print("print")
+# print('Hist :')
+# plt.hist(ts[:'1960-12-01'])
+# plt.show(block=True)
+
+# print('PLOT ')
+# plt.plot(ts[:'1960-12-01'])
+# plt.show()
+
 
 from statsmodels.tsa.stattools import adfuller
+#Function which tests the stationarity of the timeseries
 def test_stationarity(timeseries):
     #Determing rolling statistics
     rolmean=timeseries.rolling(window=12).mean()
@@ -79,8 +89,10 @@ test_stationarity(ts)
 
 #Estimating and eliminating trend
 ts_log=np.log(ts)
+print('datatype of ts_log:',type(ts_log))
+print('ts_log: ',ts_log)
 plt.plot(ts_log)
-plt.show()
+plt.show(block=False)
 
 # So we can use some techniques to estimate or model this trend and 
 # then remove it from the series. Some of most commonly used are:
@@ -88,33 +100,130 @@ plt.show()
 # 2. Smoothing- taking rolling avg
 # 3. Polynomial fitting -fit regression model
 
-#Moving Average(Smoothing)
+#Moving Average(Smoothing) : 2 ways of doing this are: 
+# 1.Rolling,2.Exponential weighted average
 moving_avg=ts_log.rolling(window=12).mean()
-plt.plot(ts_log)
-plt.plot(moving_avg,color='red')
-plt.show()
+print('datatype of moving_avg:',type(moving_avg))
+plt.title('Moving_average')
+plt.plot(ts_log,label='log plot')
+plt.plot(moving_avg,color='red',label='moving')
+plt.show(block=False)
 
 ts_log_moving_avg_diff=ts_log-moving_avg
 print(ts_log_moving_avg_diff.head(12))
 
-#drop 
+#drop NaN values in the TS 
 ts_log_moving_avg_diff.dropna(inplace=True)
 test_stationarity(ts_log_moving_avg_diff)
 
-#
-
-expwighted_avg = pd.DataFrame(ts_log).ewm(halflife=12)
-print(expwighted_avg)
-# logplot=plt.plot(ts_log)
+#Exponential weighted average of the series 
+expwighted_avg = ts_log.ewm(halflife=12).mean()
+print('datatype of expwighted_avg:\n',expwighted_avg)
+plt.title('EWM')
+plt.plot(ts_log)
 plt.plot(expwighted_avg, color='red')
+plt.show(block=False)
 
-# data = pd.DataFrame(index=ts.index, columns=[logplot,expwtavg])
-# data = data.cumsum()
-# plt.figure()
-# data.plot()
-# plt.show()
-
+ts_log_ewma_diff = ts_log - expwighted_avg
+ts_log_ewma_diff.dropna(inplace=True)
+test_stationarity(ts_log_ewma_diff)
 
 
+# The simple trend reduction techniques discussed before don’t work in all cases, 
+# particularly the ones with high seasonality. Lets discuss two ways of removing trend and seasonality:
+# 1. Differencing – taking the differece with a particular time lag
+# 2. Decomposition – modeling both trend and seasonality and removing them from the model.
+
+# 1. Differencing
+ts_log_diff = ts_log - ts_log.shift()
+plt.plot(ts_log_diff)
+
+ts_log_diff.dropna(inplace=True)
+test_stationarity(ts_log_diff)
+
+# 2. Decomposition
+from statsmodels.tsa.seasonal import seasonal_decompose
+decomposition = seasonal_decompose(ts_log)
 
 
+trend = decomposition.trend
+seasonal = decomposition.seasonal
+residual = decomposition.resid
+
+plt.subplot(411)
+plt.plot(ts_log, label='Original')
+plt.legend(loc='best')
+plt.subplot(412)
+plt.plot(trend, label='Trend')
+plt.legend(loc='best')
+plt.subplot(413)
+plt.plot(seasonal,label='Seasonality')
+plt.legend(loc='best')
+plt.subplot(414)
+plt.plot(residual, label='Residuals')
+plt.legend(loc='best')
+plt.tight_layout()
+plt.show()
+
+ts_log_decompose = residual
+ts_log_decompose.dropna(inplace=True)
+test_stationarity(ts_log_decompose)
+
+
+#ACF and PACF plots:
+from statsmodels.tsa.stattools import acf, pacf
+
+lag_acf = acf(ts_log_diff, nlags=20)
+lag_pacf = pacf(ts_log_diff, nlags=20, method='ols')
+
+#Plot ACF: 
+plt.subplot(121) 
+plt.plot(lag_acf)
+plt.axhline(y=0,linestyle='--',color='gray')
+plt.axhline(y=-1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
+plt.axhline(y=1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
+plt.title('Autocorrelation Function')
+
+#Plot PACF:
+plt.subplot(122)
+plt.plot(lag_pacf)
+plt.axhline(y=0,linestyle='--',color='gray')
+plt.axhline(y=-1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
+plt.axhline(y=1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
+plt.title('Partial Autocorrelation Function')
+plt.tight_layout()
+
+from statsmodels.tsa.arima_model import ARIMA
+
+#AR Model
+model = ARIMA(ts_log, order=(2, 1, 0))  
+results_AR = model.fit(disp=-1)  
+plt.plot(ts_log_diff)
+plt.plot(results_AR.fittedvalues, color='red')
+plt.title('RSS: %.4f'% sum((results_AR.fittedvalues-ts_log_diff)**2))
+
+# MA Model
+model = ARIMA(ts_log, order=(0, 1, 2))  
+results_MA = model.fit(disp=-1)  
+plt.plot(ts_log_diff)
+plt.plot(results_MA.fittedvalues, color='red')
+plt.title('RSS: %.4f'% sum((results_MA.fittedvalues-ts_log_diff)**2))
+
+# Combined Model
+model = ARIMA(ts_log, order=(2, 1, 2))  
+results_ARIMA = model.fit(disp=-1)  
+plt.plot(ts_log_diff)
+plt.plot(results_ARIMA.fittedvalues, color='red')
+plt.title('RSS: %.4f'% sum((results_ARIMA.fittedvalues-ts_log_diff)**2))
+
+predictions_ARIMA_diff = pd.Series(results_ARIMA.fittedvalues, copy=True)
+print( predictions_ARIMA_diff.head())
+
+predictions_ARIMA_log = pd.Series(ts_log.ix[0], index=ts_log.index)
+predictions_ARIMA_log = predictions_ARIMA_log.add(predictions_ARIMA_diff_cumsum,fill_value=0)
+predictions_ARIMA_log.head()
+
+predictions_ARIMA = np.exp(predictions_ARIMA_log)
+plt.plot(ts)
+plt.plot(predictions_ARIMA)
+plt.title('RMSE: %.4f'% np.sqrt(sum((predictions_ARIMA-ts)**2)/len(ts)))
