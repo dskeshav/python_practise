@@ -69,7 +69,7 @@ for name,model in models:
 #     print(classification_report(y_validation, predictions))
 
 
-picModel=model.fit(X_train, y_train)
+picModel=SVC().fit(X_train, y_train)
 
 
 filename='bank_note.pkl'

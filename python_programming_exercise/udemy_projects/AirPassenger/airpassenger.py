@@ -184,6 +184,7 @@ plt.axhline(y=-1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
 plt.axhline(y=1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
 plt.title('Autocorrelation Function')
 
+
 #Plot PACF:
 plt.subplot(122)
 plt.plot(lag_pacf)
@@ -192,10 +193,13 @@ plt.axhline(y=-1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
 plt.axhline(y=1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
 plt.title('Partial Autocorrelation Function')
 plt.tight_layout()
+plt.show()
+
 
 from statsmodels.tsa.arima_model import ARIMA
 
 #AR Model
+plt.subplot(3,1,1)
 model = ARIMA(ts_log, order=(2, 1, 0))  
 results_AR = model.fit(disp=-1)  
 plt.plot(ts_log_diff)
@@ -203,6 +207,7 @@ plt.plot(results_AR.fittedvalues, color='red')
 plt.title('RSS: %.4f'% sum((results_AR.fittedvalues-ts_log_diff)**2))
 
 # MA Model
+plt.subplot(3,1,2)
 model = ARIMA(ts_log, order=(0, 1, 2))  
 results_MA = model.fit(disp=-1)  
 plt.plot(ts_log_diff)
@@ -210,20 +215,24 @@ plt.plot(results_MA.fittedvalues, color='red')
 plt.title('RSS: %.4f'% sum((results_MA.fittedvalues-ts_log_diff)**2))
 
 # Combined Model
+plt.subplot(3,1,3)
 model = ARIMA(ts_log, order=(2, 1, 2))  
 results_ARIMA = model.fit(disp=-1)  
 plt.plot(ts_log_diff)
 plt.plot(results_ARIMA.fittedvalues, color='red')
 plt.title('RSS: %.4f'% sum((results_ARIMA.fittedvalues-ts_log_diff)**2))
+plt.tight_layout()
+plt.show()
 
 predictions_ARIMA_diff = pd.Series(results_ARIMA.fittedvalues, copy=True)
 print( predictions_ARIMA_diff.head())
 
 predictions_ARIMA_log = pd.Series(ts_log.ix[0], index=ts_log.index)
-predictions_ARIMA_log = predictions_ARIMA_log.add(predictions_ARIMA_diff_cumsum,fill_value=0)
+predictions_ARIMA_log = predictions_ARIMA_log.add(predictions_ARIMA_diff.cumsum(),fill_value=0)
 predictions_ARIMA_log.head()
 
 predictions_ARIMA = np.exp(predictions_ARIMA_log)
 plt.plot(ts)
 plt.plot(predictions_ARIMA)
 plt.title('RMSE: %.4f'% np.sqrt(sum((predictions_ARIMA-ts)**2)/len(ts)))
+plt.show()
