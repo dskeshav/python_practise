@@ -214,10 +214,15 @@ plt.plot(ts_log_diff)
 plt.plot(results_MA.fittedvalues, color='red')
 plt.title('RSS: %.4f'% sum((results_MA.fittedvalues-ts_log_diff)**2))
 
+
+import pickle
 # Combined Model
 plt.subplot(3,1,3)
 model = ARIMA(ts_log, order=(2, 1, 2))  
-results_ARIMA = model.fit(disp=-1)  
+results_ARIMA = model.fit(disp=-1)
+# creating pickle file  
+filename='airpassenger.pkl'
+pickle.dump(results_ARIMA,open(filename,'wb'))
 plt.plot(ts_log_diff)
 plt.plot(results_ARIMA.fittedvalues, color='red')
 plt.title('RSS: %.4f'% sum((results_ARIMA.fittedvalues-ts_log_diff)**2))
