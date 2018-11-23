@@ -4,12 +4,21 @@ import sklearn
 from flask import Flask,request,jsonify
 import pickle
 from datetime import datetime
+from statsmodels.tsa.arima_model import ARIMAResults
 
 def predict_output():
     output={'Number of passenger': 0}
     x_input=datetime.date(datetime(1949,1,1))
     print(x_input)
     file='airpassenger.pkl'
+    from pandas import Series
+    from statsmodels.tsa.arima_model import ARIMAResults
+    import numpy
+
+    # invert differenced value
+    def inverse_difference(history, yhat, interval=1):
+        return yhat + history[-interval]
+
     M1=pickle.load(open(file,'rb'))
     output['Number of passenger']=M1.predict(x_input)[0]
     print(output)
