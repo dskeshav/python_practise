@@ -3,49 +3,32 @@ import sklearn
 import pickle
 from flask import Flask,request,jsonify
 
-def predict_output():
+def predict_output(varience,skwness,curtosis,entropy):
     output={'output_pred_for_banknote':1}
-    x_input=np.array([varience,skwness,curtosis,entropy])
+    x_input=np.array([varience,skwness,curtosis,entropy]).reshape(1, -1)
     file='bank_note.pkl'
     M1=pickle.load(open(file,'rb'))
-    return 'Hello Predictor'
+    output['output_pred_for_banknote']=M1.predict(x_input)[0]
+    print(output)
+    return output
 
 app=Flask(__name__)
-# @app.route('/hello', methods=['POST'])
-# def index():
-#     #grabs the data tagged as 'name'
-#     name = request.get_json()['name']
-    
-#     #sending a hello back to the requester
-#     return "Hello " + name
+
 @app.route('/')
 def index():
     return "Bank note authentic prediction!"
-
-
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     #grabbing a set of wine features from the request's body
-#     feature_array = request.get_json()['feature_array']
-    
-#     #our model rates the wine based on the input array
-#     prediction = model.predict([feature_array]).tolist()
-    
-#     #preparing a response object and storing the model's predictions
-#     response = {}
-#     response['predictions'] = prediction
-    
-#     #sending our response object back as json
-#     return jsonify(response)
 
 @app.route('/bank_note_authentication',methods=['GET'])
 def note_predict():
     body=request.get_data()
     header=request.headers
-    res=predict_output()
     
+    varience,skwness,curtosis,entropy=-0.9854,-6.661,5.8245,0.5461
+    try:
+        res=predict_output(varience,skwness,curtosis,entropy)
+    except:
+        res={'failure':'exception in the prediction method'}
     return jsonify(res)
-
 
 
 if __name__=="__main__":

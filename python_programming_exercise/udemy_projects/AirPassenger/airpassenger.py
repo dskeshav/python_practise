@@ -47,9 +47,11 @@ from datetime import datetime
 # plt.plot(ts[:'1960-12-01'])
 # plt.show()
 
-
+#Function which tests the stationarity of the timeseries are:
+# 1.rolling statistics 
+# 2.Augmented Dickey Fuller
 from statsmodels.tsa.stattools import adfuller
-#Function which tests the stationarity of the timeseries
+
 def test_stationarity(timeseries):
     #Determing rolling statistics
     rolmean=timeseries.rolling(window=12).mean()
@@ -69,7 +71,7 @@ def test_stationarity(timeseries):
     # df.plot()
     plt.show()
 
-    #perform Dickey-Fuller test:
+    #perform Augmented Dickey-Fuller test:
     print('Result of Dickey-Fuller Test:')
     dftest=adfuller(timeseries,autolag='AIC')
     print("dftest datatype:",type(dftest))
@@ -214,10 +216,16 @@ plt.plot(ts_log_diff)
 plt.plot(results_MA.fittedvalues, color='red')
 plt.title('RSS: %.4f'% sum((results_MA.fittedvalues-ts_log_diff)**2))
 
+
+import pickle
 # Combined Model
 plt.subplot(3,1,3)
 model = ARIMA(ts_log, order=(2, 1, 2))  
-results_ARIMA = model.fit(disp=-1)  
+results_ARIMA = model.fit(disp=-1)
+# creating pickle file  
+filename='airpassenger.pkl'
+pickle.dump(results_ARIMA,open(filename,'wb'))
+# np.save('model_bias.npy', [bias])
 plt.plot(ts_log_diff)
 plt.plot(results_ARIMA.fittedvalues, color='red')
 plt.title('RSS: %.4f'% sum((results_ARIMA.fittedvalues-ts_log_diff)**2))
