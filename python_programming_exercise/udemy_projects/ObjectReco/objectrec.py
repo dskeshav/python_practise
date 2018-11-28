@@ -12,7 +12,7 @@ print('Testing Images {}'.format(X_test.shape))
 # create a grid of 3x3 images
 for i in range(0,9):
     plt.subplot(330+1 +i)
-    img = X_train[50+i]
+    img = X_train[i]
     plt.imshow(img)
     
 # show the plot
@@ -59,14 +59,14 @@ def allcnn(weights=None):
     model.add(Conv2D(96,(3,3),padding='same'))
     model.add(Activation('relu'))
     model.add(Conv2D(96,(3,3),padding='same',strides=(2,2)))
-    model.add(Dropout(0,5))
+    model.add(Dropout(0.5))
 
     model.add(Conv2D(192,(3,3),padding='same'))
     model.add(Activation('relu'))
     model.add(Conv2D(192,(3,3),padding='same'))
     model.add(Activation('relu'))
     model.add(Conv2D(192,(3,3),padding='same',strides=(2,2)))
-    model.add(Dropout(0,5))
+    model.add(Dropout(0.5))
 
     model.add(Conv2D(192,(3,3),padding='same'))
     model.add(Activation('relu'))
@@ -74,7 +74,7 @@ def allcnn(weights=None):
     model.add(Activation('relu'))
     model.add(Conv2D(10,(1,1),padding='valid'))
 
-#add Global 
+#add GlobalAveragePooling2D layer with softmax 
     model.add(GlobalAveragePooling2D())
     model.add(Activation('softmax'))
 
@@ -83,13 +83,37 @@ def allcnn(weights=None):
 
     return model
 
+# #define hyper parameters
+# learning_rate=0.01
+# weight_decay=1e-6
+# momentum=0.9
+
+# #build model
+# model=allcnn()
+
+# #define optimizer and compile model 
+# sgd=SGD(lr=learning_rate,momentum=momentum,decay=weight_decay,nesterov=True)
+# model.compile(loss='categorical_crossentropy',optimizer=sgd,metrics=['accuracy'])
+
+# #print model summary
+# print(model.summary())
+
+# #define additional training parameter
+# epochs =350
+# batch_size=32
+
+# #fit the model
+# model.fit(X_train,y_train,validation_data=(X_test,y_test),epochs=epochs,batch_size=batch_size,verbose=1)
+
+
 #define hyper parameters
 learning_rate=0.01
 weight_decay=1e-6
 momentum=0.9
 
+weights='all_cnn_weights_0.9088_0.4994.hdf5'
 #build model
-model=allcnn()
+model=allcnn(weights)
 
 #define optimizer and compile model 
 sgd=SGD(lr=learning_rate,momentum=momentum,decay=weight_decay,nesterov=True)
@@ -97,3 +121,8 @@ model.compile(loss='categorical_crossentropy',optimizer=sgd,metrics=['accuracy']
 
 #print model summary
 print(model.summary())
+
+
+#test the model with pretrained weights
+scores=model.evaluate(X_test,y_test,verbose=1)
+print("Accuracy: %.2f%%"% (scores[1]*100))
