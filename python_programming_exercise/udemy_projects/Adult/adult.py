@@ -4,7 +4,7 @@ from pandas.plotting import scatter_matrix
 from sklearn import model_selection
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
+import seaborn as snsmake
 import numpy as np
 import os
 
