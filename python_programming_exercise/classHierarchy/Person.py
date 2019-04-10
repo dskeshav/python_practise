@@ -19,7 +19,7 @@ class Person(object):
         return (datetime.date.today()-self.birthday).days
 
     def __lt__(self,other):
-        """return True if slef's name is lexicographically 
+        """return True if self's name is lexicographically 
         less than other's name, and False otherwise""" 
         if self.lastName== other.lastName:
             return self.name<other.name
@@ -50,10 +50,10 @@ class Person(object):
 # print('p1<p4: ',p1<p4)
 
 
-class TransferStudent(Student):
-    pass
-def isStudent(obj):
-    return isinstance(obj,Student)
+# class TransferStudent(Student):
+#     pass
+# def isStudent(obj):
+#     return isinstance(obj,Student)
 
 
 

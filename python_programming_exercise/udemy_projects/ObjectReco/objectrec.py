@@ -122,7 +122,6 @@ model.compile(loss='categorical_crossentropy',optimizer=sgd,metrics=['accuracy']
 #print model summary
 print(model.summary())
 
-
 #test the model with pretrained weights
 scores=model.evaluate(X_test,y_test,verbose=1)
 print("Accuracy: %.2f%%"% (scores[1]*100))

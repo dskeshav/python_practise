@@ -27,4 +27,6 @@ def main():
             print("You got it in ",num_guesses," guesses")
             guessed_number=True
 
-main()
+
+if __name__=="__main__":
+    main()
