@@ -11,7 +11,7 @@ def main():
     print("Creating data ...",end=' ')
     sys.stdout.flush()
 
-    data_list= [] #5000000 data point items
+    data_list= [] #50000000 data point items
     random.seed(0)
     for d_id in range(50000):
         x=random.randint(0,1000)
@@ -53,7 +53,11 @@ def main():
     sys.stdout.flush()
     print("dt: {} sec".format(dt_list))
     
-
+    def find_point_by_id_in_list(data_list,i):
+        for d in data_list:
+            if d.id==i:
+                return d
+        return None 
 
 
 ########################################
@@ -77,12 +81,6 @@ def main():
     sys.stdout.flush()
 
     print("dt: {} sec".format(dt_dict))
-
-    def find_point_by_id_in_list(data_list,i):
-        for d in data_list:
-            if d.id==i:
-                return d
-        return None 
 
 if __name__=='__main__':
     main()
