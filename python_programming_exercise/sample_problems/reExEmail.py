@@ -9,7 +9,7 @@ def emailMatch():
     emailAddress="john1@teksystems.com"
     part2="(\w+)@((\w+\.)+(com))"
     r2=re.match(part2,emailAddress)
-    print(r2.group(1))
+    print(r2.group(2))
     return 0
 
 def findallMethod():

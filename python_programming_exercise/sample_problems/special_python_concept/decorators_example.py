@@ -1,4 +1,5 @@
-#Decorators: Function that takes another function as an argument add some kind of functionlity and then returns the other function, all that is performed is without altering the source code.
+#Decorators: Function that takes another function as an argument add some kind of functionlity 
+#and then returns the other function, all that is performed is without altering the source code.
 
 def decorator_function(original_function):
     def wrapper_function(*args,**kwargs):
@@ -21,7 +22,8 @@ def display_info(name,age):
 display_info('John',25)
 
 
-########################################
+########################################pypt
+
 print("##############################")
 class decorator_class(object):
     def __init__(self,original_function):

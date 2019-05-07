@@ -52,7 +52,6 @@ def main():
 
     sys.stdout.flush()
     print("dt: {} sec".format(dt_list))
-    
     def find_point_by_id_in_list(data_list,i):
         for d in data_list:
             if d.id==i:

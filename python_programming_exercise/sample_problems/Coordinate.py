@@ -11,7 +11,7 @@ class Coordinate(object):
     def __str__(self):
         return "<"+str(self.x)+","+str(self.y)+">"
     
-    def __sub__(self):
+    def __sub__(self,other):
         return Coordinate(self.x-other.x,self.y-other.y) 
 
 if __name__=="__main__":

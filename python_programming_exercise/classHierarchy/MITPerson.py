@@ -8,7 +8,7 @@ class MITPerson(Person):
         self.idNum=MITPerson.nextIdNum
         MITPerson.nextIdNum +=1
 
-    def getIdNum(self):
+    def getIdNum(self):7
         return self.idNum
 
     #Sorting MIT people uses their ID number,not name!
@@ -19,32 +19,32 @@ class MITPerson(Person):
         return (self.getLastName()+" says: "+utterance)
 
 
-m3=MITPerson('Mark Zuckerberg')
-Person.setBirthday(m3,5,14,84)
-m2=MITPerson('Drew Houston')
-Person.setBirthday(m2,3,4,83)
-m1=MITPerson('Bill Gates')
-Person.setBirthday(m1,10,28,55)
+# m3=MITPerson('Mark Zuckerberg')
+# Person.setBirthday(m3,5,14,84)
+# m2=MITPerson('Drew Houston')
+# Person.setBirthday(m2,3,4,83)
+# m1=MITPerson('Bill Gates')
+# Person.setBirthday(m1,10,28,55)
 
-# print(m1)
-print(m3.speak('Hi there'))
+# # print(m1)
+# print(m3.speak('Hi there'))
 
-MITPersonList=[m1,m2,m3]
-print('Before sorting')
-for e in MITPersonList:
-    print(e)
+# MITPersonList=[m1,m2,m3]
+# print('Before sorting')
+# for e in MITPersonList:
+#     print(e)
 
-MITPersonList.sort()
-print('After sorting')
-for e in MITPersonList:
-    print(e)
+# MITPersonList.sort()
+# print('After sorting')
+# for e in MITPersonList:
+#     print(e)
 
-p1=MITPerson('Eric')
-p2=MITPerson('John')
-p3=MITPerson('John')
-p4=Person('John')
+# p1=MITPerson('Eric')
+# p2=MITPerson('John')
+# p3=MITPerson('John')
+# p4=Person('John')
 
-print()
-print("p1<p2: ",p1<p2)
+# print()
+# print("p1<p2: ",p1<p2)
     
     
