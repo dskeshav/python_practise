@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sklearn
 
-
 # Load the dataset from the csv file
 data=pd.read_csv('creditcard.csv')
 
@@ -16,7 +15,6 @@ print(data.columns)
 print (data.shape)
 
 print(data.describe())
-
 
 data =data.sample(frac=0.1,random_state=1)
 

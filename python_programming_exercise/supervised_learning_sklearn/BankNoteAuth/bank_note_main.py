@@ -41,6 +41,7 @@ print("X_train size:",X_train.shape)
 print("X_validation size:",X_validation.shape)
 print("y_train size:",y_train.shape)
 print("y_validation size:",y_validation.shape)
+
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report ,confusion_matrix , accuracy_score
